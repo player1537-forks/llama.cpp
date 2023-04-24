@@ -19,10 +19,8 @@ env:
  BRANCH_NAME: ${{ github.head_ref || github.ref_name }}
 
 jobs:
-  ubuntu-latest-make:
-    if: github.event.pull_request.draft == false
-
-    runs-on: ubuntu-latest
+  ubuntu-focal-make:
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Clone
@@ -33,12 +31,12 @@ jobs:
         id: depends
         run: |
           sudo apt-get update
-          sudo apt-get install build-essential
+          sudo apt-get install build-essential gcc-8
 
       - name: Build
         id: make_build
         run: |
-          make
+          CC=gcc-8 make
 
   ubuntu-latest-cmake:
     if: github.event.pull_request.draft == false
@@ -228,7 +226,7 @@ jobs:
     runs-on: ubuntu-latest
 
     needs:
-      - ubuntu-latest-make
+      - ubuntu-focal-make
       - ubuntu-latest-cmake
       - macOS-latest-make
       - macOS-latest-cmake
