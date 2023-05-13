@@ -26,12 +26,14 @@ conv_map = {
 
 parser = argparse.ArgumentParser(description='Convert a model from HF format to GGML format.')
 parser.add_argument('model_name', type=str, help='directory of the model to convert. Example: "bigscience/bloomz-560m"')
+parser.add_argument('--tokenizer-name', type=str)
 parser.add_argument('dir_output', type=str, help='directory where the output file will be written')
 parser.add_argument('--use-f32', action='store_true', help='if present, use float32 instead of float16')
 parser.add_argument('--debug', action='store_true', help='if present, dump the progress as it happens')
 args = parser.parse_args()
 
 model_name = args.model_name
+tokenizer_name = args.tokenizer_name or model_name
 dir_out = args.dir_output
 
 os.makedirs(dir_out, exist_ok=True)
@@ -40,7 +42,7 @@ ftype_str = ["f32", "f16"]
 ftype = 0 if args.use_f32 else 1
 debug_flag = args.debug
 
-tokenizer = AutoTokenizer.from_pretrained(model_name)
+tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
 config = AutoConfig.from_pretrained(model_name)
 hparams = config.to_dict()
 print("Loading model: ", model_name)
